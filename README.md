@@ -8,7 +8,6 @@ descargarlo e instalarlo desde [nodejs.org](https://nodejs.org/).
 2. Ejecuta el siguiente comando para clonar el repositorio:
 ```
 git clone https://github.com/Yosiak-alv/desafio02.git
-
 ```
 3. Ingresa al directorio del proyecto usando el comando:
 ```
