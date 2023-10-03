@@ -1,4 +1,8 @@
-#  Desafio Practico # 02
+# Desafio 2: Desafio 2 de Diseño y Programación de Software Multiplataforma
+## Presentado Por:
+
+### Luis Antonio Bonilla Elías BE202156
+### Josias Isaac Alvarenga Romero AR200778
 
 ## Requisitos Previos
 Antes de comenzar, asegúrate de tener instalado Node.js en tu sistema. Puedes
