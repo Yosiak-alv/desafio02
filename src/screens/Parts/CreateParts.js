@@ -2,52 +2,40 @@ import { Text, View } from 'react-native';
 import { Layout } from '../../layout/Layout';
 import { Input } from '../../components/Input';
 import { Select } from '../../components/Select';
-import brandsData from '../../../brands.json';
+
 import { PrimaryButton } from '../../components/PrimaryButton';
-import { useState } from 'react';
+
 import uuid from 'react-native-uuid';
+import { useFormik } from 'formik';
+import * as Yup from 'yup';
+import { FlashMessages } from '../../components/FlashMessage';
+
 export const CreateParts = ({navigation}) => {
 
-    const [newPart, setNewPart] = useState({
-        id: uuid.v1(),
-        type: '',
-        brand: '',
-        serialNumber: '',
-        price: '',
-        date: '',
-    });
+    const formik = useFormik({
+        initialValues:{
+            id: uuid.v1(),
+            type: '',
+            brand: '',
+            serialNumber: '',
+            price: '',
+            date: '',
+        },
+        validationSchema: Yup.object({
+            type: Yup.string().required(),
+            brand:Yup.string().required(),
+            serialNumber: Yup.string().required(),
+            price: Yup.number().required(),
+            date: Yup.string().required().matches(/^\d{4}-\d{2}-\d{2}$/),
+        }),
+        onSubmit: () => handleAddPart()
+    })
 
-    const [dateError, setDateError] = useState('')
-
-
-    console.log(newPart);
-    
     const handleAddPart = () => {
-        const dateFormat = /^\d{1,2}\/\d{1,2}\/\d{4}$/;
+        navigation.navigate('PartsList',{ level:'success', flashMessage:'Part Added Successfuly! .', part: formik.values});
+    };
 
-        if (newPart.type != '' && newPart.date != ''  && newPart.brand != '' && newPart.serialNumber != '' && newPart.price != '' ) {
-            //setParts([...parts, newPart]);
-            if(dateFormat.test(newPart.date)){
-                navigation.navigate('PartsList',{level:'success',flashMessage:'Part Added Successfuly! .', part:newPart});
-            setNewPart({
-               
-                name: '',
-                type: '',
-                brand: '',
-                serialNumber: '',
-                price: '',
-                date: '',
-            });
-            setDateError('');
-            } else {
-                setDateError('Please enter a valid date in the following format "day/month/year" ')
-            }
-        } else {
-            alert('Por favor, complete los campos requeridos.');
-        }
-      };
-
-    
+    console.log(formik);
 
     return (
         <Layout>
@@ -59,28 +47,39 @@ export const CreateParts = ({navigation}) => {
                        Add new Part
                     </Text>
                    
-                    <Select DefaultPlaceholder={'Select a Brand'} onValueChange={(text) => setNewPart({...newPart, brand:text})} selectedValue={newPart.brand}/>
-                    
-                    <Input placeholder="Type" value={newPart.type} onChangeText={(text) => setNewPart({...newPart, type:text})} />
+                    <Select DefaultPlaceholder={'Select a Brand'} onValueChange={formik.handleChange('brand')} selectedValue={formik.values.brand}/>
 
+                    <Input placeholder="Type" value={formik.values.type} onChangeText={formik.handleChange('type')} />
+                    
                     <Input  placeholder="# Serial - Number"
-                        value={newPart.serialNumber}
-                        onChangeText={(text) => setNewPart({ ...newPart, serialNumber: text })}
+                        value={formik.values.serialNumber}
+                        onChangeText={formik.handleChange('serialNumber')}
                     />
 
                     <Input placeholder="Price"
-                       value={newPart.price}
-                       onChangeText={(text) => setNewPart({ ...newPart, price: text })}
-                    />
-                    <Input placeholder="Fecha de Cambio (dia/mes/año)"
-                       value={newPart.date}
-                       onChangeText={(text) => setNewPart({ ...newPart, date: text })}
+                       value={formik.values.price}
+                       onChangeText={formik.handleChange('price')}
                     />
 
-
+                    <Input placeholder="Fecha de Cambio (YYYY-MM-DD)"
+                       value={formik.values.date}
+                       onChangeText={formik.handleChange('date')}
+                    />
+                    
                     <View className="block w-full mt-2">
-                        <PrimaryButton message={'add part'} onPress={() => handleAddPart()}/>
+                        <PrimaryButton message={'add part'} onPress={formik.handleSubmit}/>
                     </View>
+                    {
+                        formik.errors ? (
+                            <>  
+                                {(formik.errors?.brand && formik.touched?.brand == true )&& (<FlashMessages level={'error'} message={formik.errors.brand}/>)}
+                                {(formik.errors?.type && formik.touched?.type == true) && (<FlashMessages level={'error'} message={formik.errors.type}/>)}
+                                {(formik.errors?.serialNumber && formik.touched?.serialNumber == true) && (<FlashMessages level={'error'} message={formik.errors.serialNumber}/>)}
+                                {(formik.errors?.price && formik.touched?.price == true) && (<FlashMessages level={'error'} message={formik.errors.price}/>)}
+                                {(formik.errors?.date && formik.touched?.date == true) && (<FlashMessages level={'error'} message={formik.errors.date}/>)}
+                            </>
+                        ):null
+                    }
                 </View>
             </View>
 
