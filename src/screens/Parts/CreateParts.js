@@ -35,8 +35,6 @@ export const CreateParts = ({navigation}) => {
         navigation.navigate('PartsList',{ level:'success', flashMessage:'Part Added Successfuly! .', part: formik.values});
     };
 
-    console.log(formik);
-
     return (
         <Layout>
 

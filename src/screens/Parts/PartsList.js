@@ -26,7 +26,6 @@ export const PartsList = ({navigation,route}) => {
 
     useEffect(() => {
        onAdd();
-       console.log(parts);
     },[route.params?.level]);
     
     const sortedData = parts.sort((a, b) => new Date(b.date) - new Date(a.date));
